@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "Game.h"
 
-// Constantes da janela (não const para serem visíveis em outros arquivos)
+// Constantes da janela
 int width = 800;
 int height = 600;
 
@@ -18,7 +18,7 @@ int height = 600;
 Game* game = nullptr;
 
 /**
- * Callback de display - desenha tudo na tela
+ * Callback de display
  */
 void display() {
     glClear(GL_COLOR_BUFFER_BIT);
@@ -33,7 +33,7 @@ void display() {
 }
 
 /**
- * Callback de update - atualiza a lógica do jogo
+ * Callback de update
  */
 void update(int value) {
     if (game != nullptr) {
@@ -77,11 +77,14 @@ void handleSpecialKeysUp(int key, int x, int y) {
 }
 
 /**
- * Callback de reshape - ajusta a projeção quando a janela é redimensionada
+ * Callback de reshape
  */
 void reshape(int w, int h) {
     // Previne divisão por zero
     if (h == 0) h = 1;
+    
+    float windowAspect = static_cast<float>(w) / static_cast<float>(h);
+    width = static_cast<int>(height * windowAspect + 0.5f);
     
     // Usa a janela inteira para renderizar
     glViewport(0, 0, w, h);
@@ -96,6 +99,10 @@ void reshape(int w, int h) {
     // Volta para a matriz ModelView
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
+
+    if (game != nullptr) {
+        game->updateWindowSize(width, height);
+    }
 }
 
 /**

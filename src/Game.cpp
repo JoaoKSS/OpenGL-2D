@@ -311,8 +311,10 @@ void Game::drawGameOver() {
     const char* text = "GAME OVER";
     int textWidth = glutBitmapLength(GLUT_BITMAP_TIMES_ROMAN_24, 
                                      (const unsigned char*)text);
-    
-    glRasterPos2f((windowWidth - textWidth) / 2, windowHeight / 2);
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    float scaleX = static_cast<float>(vp[2]) / static_cast<float>(windowWidth);
+    glRasterPos2f((windowWidth - (textWidth / scaleX)) / 2, windowHeight / 2);
     for (const char* c = text; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
     }
@@ -335,8 +337,10 @@ void Game::drawWin() {
     const char* text = "YOU WIN!";
     int textWidth = glutBitmapLength(GLUT_BITMAP_TIMES_ROMAN_24, 
                                      (const unsigned char*)text);
-    
-    glRasterPos2f((windowWidth - textWidth) / 2, windowHeight / 2);
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    float scaleX = static_cast<float>(vp[2]) / static_cast<float>(windowWidth);
+    glRasterPos2f((windowWidth - (textWidth / scaleX)) / 2, windowHeight / 2);
     for (const char* c = text; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
     }
@@ -433,12 +437,16 @@ void Game::drawMenu() {
         }
     glEnd();
     
+    GLint vp[4];
+    glGetIntegerv(GL_VIEWPORT, vp);
+    float scaleX = static_cast<float>(vp[2]) / static_cast<float>(windowWidth);
+    
     // Título principal
     glColor3f(0.0f, 1.0f, 1.0f); // Ciano
     const char* title = "SPACE INVADERS";
     int titleWidth = glutBitmapLength(GLUT_BITMAP_TIMES_ROMAN_24, 
                                       (const unsigned char*)title);
-    glRasterPos2f((windowWidth - titleWidth) / 2.0f, windowHeight - 120);
+    glRasterPos2f((windowWidth - (titleWidth / scaleX)) / 2.0f, windowHeight - 120);
     for (const char* c = title; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
     }
@@ -448,7 +456,7 @@ void Game::drawMenu() {
     const char* controlsTitle = "CONTROLES:";
     int controlsTitleWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
                                               (const unsigned char*)controlsTitle);
-    glRasterPos2f((windowWidth - controlsTitleWidth) / 2.0f, windowHeight / 2 + 80);
+    glRasterPos2f((windowWidth - (controlsTitleWidth / scaleX)) / 2.0f, windowHeight / 2 + 80);
     for (const char* c = controlsTitle; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
     }
@@ -459,7 +467,7 @@ void Game::drawMenu() {
     const char* moveText = "<- / ->  : Mover canhao";
     int moveWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
                                      (const unsigned char*)moveText);
-    glRasterPos2f((windowWidth - moveWidth) / 2.0f, windowHeight / 2 + 40);
+    glRasterPos2f((windowWidth - (moveWidth / scaleX)) / 2.0f, windowHeight / 2 + 40);
     for (const char* c = moveText; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
     }
@@ -468,7 +476,7 @@ void Game::drawMenu() {
     const char* shootText = "ESPACO   : Atirar";
     int shootWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
                                       (const unsigned char*)shootText);
-    glRasterPos2f((windowWidth - shootWidth) / 2.0f, windowHeight / 2 + 10);
+    glRasterPos2f((windowWidth - (shootWidth / scaleX)) / 2.0f, windowHeight / 2 + 10);
     for (const char* c = shootText; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
     }
@@ -477,7 +485,7 @@ void Game::drawMenu() {
     const char* escText = "ESC      : Sair";
     int escWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
                                     (const unsigned char*)escText);
-    glRasterPos2f((windowWidth - escWidth) / 2.0f, windowHeight / 2 - 20);
+    glRasterPos2f((windowWidth - (escWidth / scaleX)) / 2.0f, windowHeight / 2 - 20);
     for (const char* c = escText; *c != '\0'; c++) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
     }
@@ -491,7 +499,7 @@ void Game::drawMenu() {
         const char* startText = ">>> Pressione ENTER ou ESPACO para iniciar <<<";
         int startWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
                                           (const unsigned char*)startText);
-        glRasterPos2f((windowWidth - startWidth) / 2.0f, 100);
+        glRasterPos2f((windowWidth - (startWidth / scaleX)) / 2.0f, 100);
         for (const char* c = startText; *c != '\0'; c++) {
             glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
         }
