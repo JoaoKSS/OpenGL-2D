@@ -3,6 +3,8 @@
 
 #include "Player.h"
 #include "AlienSwarm.h"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_mixer.h>
 
 /**
  * Estados possíveis do jogo
@@ -33,6 +35,11 @@ private:
     // Estado das teclas
     bool keyState[256];
     bool specialKeyState[256];
+    
+    // Sistema de áudio SDL2_mixer
+    Mix_Music* backgroundMusic;
+    Mix_Chunk* shootSound;
+    Mix_Chunk* explosionSound;
 
 public:
     Game(int width, int height);
@@ -44,6 +51,8 @@ public:
     
     // Inicialização
     void init();
+    void initAudio();
+    void cleanupAudio();
     
     // Loop principal
     void update();
@@ -78,6 +87,10 @@ public:
     
     // Adiciona pontos
     void addScore(int points);
+    
+    // Sons
+    void playShootSound();
+    void playExplosionSound();
 };
 
 #endif // GAME_H

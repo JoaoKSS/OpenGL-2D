@@ -12,10 +12,10 @@ BINDIR = bin
 # (Descomente a secao para o seu SO)
 
 # Para LINUX 
-LDFLAGS = -lGL -lglut -lGLU
+LDFLAGS = -lGL -lglut -lGLU -lSDL2 -lSDL2_mixer
 
 # Para WINDOWS (usando MSYS2/MinGW)
-# LDFLAGS = -lGL -lglut -lGLU -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer
+# LDFLAGS = -lfreeglut -lopengl32 -lglu32 -lmingw32 -lSDL2main -lSDL2 -lSDL2_mixer
 
 # --- Restante do Makefile ---
 

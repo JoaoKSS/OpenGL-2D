@@ -12,7 +12,8 @@ Game* Game::instance = nullptr;
 Game::Game(int width, int height)
     : player(nullptr), swarm(nullptr), 
       state(PLAYING), score(0),
-      windowWidth(width), windowHeight(height) {
+      windowWidth(width), windowHeight(height),
+      backgroundMusic(nullptr), shootSound(nullptr), explosionSound(nullptr) {
     
     // Inicializa estado das teclas
     for (int i = 0; i < 256; i++) {
@@ -28,6 +29,7 @@ Game::~Game() {
     if (swarm != nullptr) {
         delete swarm;
     }
+    cleanupAudio();
 }
 
 /**
@@ -48,6 +50,9 @@ void Game::setInstance(Game* game) {
  * Inicializa o jogo
  */
 void Game::init() {
+    // Inicializa o sistema de áudio
+    initAudio();
+    
     // Cria o jogador no centro inferior
     player = new Player(windowWidth / 2, 50, 30);
     
@@ -59,6 +64,70 @@ void Game::init() {
     
     state = PLAYING;
     score = 0;
+}
+
+/**
+ * Inicializa o sistema de áudio SDL2_mixer
+ */
+void Game::initAudio() {
+    // Inicializa SDL áudio
+    if (SDL_Init(SDL_INIT_AUDIO) < 0) {
+        printf("Erro ao inicializar SDL: %s\n", SDL_GetError());
+        return;
+    }
+    
+    // Inicializa SDL_mixer
+    if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        printf("Erro ao inicializar SDL_mixer: %s\n", Mix_GetError());
+        return;
+    }
+    
+    // Carrega música de fundo
+    backgroundMusic = Mix_LoadMUS("assets/music.mp3");
+    if (backgroundMusic == nullptr) {
+        printf("Erro ao carregar música: %s\n", Mix_GetError());
+    } else {
+        // Toca música em loop infinito
+        Mix_PlayMusic(backgroundMusic, -1);
+        Mix_VolumeMusic(64); // Volume médio (0-128)
+    }
+    
+    // Carrega efeitos sonoros
+    shootSound = Mix_LoadWAV("assets/shoot.wav");
+    if (shootSound == nullptr) {
+        printf("Erro ao carregar som de tiro: %s\n", Mix_GetError());
+    }
+    
+    explosionSound = Mix_LoadWAV("assets/explosion.wav");
+    if (explosionSound == nullptr) {
+        printf("Erro ao carregar som de explosão: %s\n", Mix_GetError());
+    }
+}
+
+/**
+ * Limpa recursos de áudio
+ */
+void Game::cleanupAudio() {
+    // Para a música
+    Mix_HaltMusic();
+    
+    // Libera recursos
+    if (backgroundMusic != nullptr) {
+        Mix_FreeMusic(backgroundMusic);
+        backgroundMusic = nullptr;
+    }
+    if (shootSound != nullptr) {
+        Mix_FreeChunk(shootSound);
+        shootSound = nullptr;
+    }
+    if (explosionSound != nullptr) {
+        Mix_FreeChunk(explosionSound);
+        explosionSound = nullptr;
+    }
+    
+    // Fecha SDL_mixer e SDL
+    Mix_CloseAudio();
+    SDL_Quit();
 }
 
 /**
@@ -125,7 +194,10 @@ void Game::processInput() {
     
     // Disparo
     if (keyState[' ']) {
-        player->shoot();
+        if (player->canShoot()) {
+            player->shoot();
+            playShootSound(); // Toca som de tiro
+        }
     }
 }
 
@@ -145,6 +217,7 @@ void Game::checkCollisions() {
         for (auto alien : aliens) {
             if (playerShot->checkCollision(alien)) {
                 // Alien foi atingido
+                playExplosionSound(); // Toca som de explosão
                 int points = swarm->removeAlien(alien);
                 addScore(points);
                 playerShot->setActive(false);
@@ -285,4 +358,22 @@ void Game::handleSpecialKeyDown(int key) {
 
 void Game::handleSpecialKeyUp(int key) {
     specialKeyState[key] = false;
+}
+
+/**
+ * Toca som de tiro
+ */
+void Game::playShootSound() {
+    if (shootSound != nullptr) {
+        Mix_PlayChannel(-1, shootSound, 0);
+    }
+}
+
+/**
+ * Toca som de explosão
+ */
+void Game::playExplosionSound() {
+    if (explosionSound != nullptr) {
+        Mix_PlayChannel(-1, explosionSound, 0);
+    }
 }
