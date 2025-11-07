@@ -139,11 +139,7 @@ int main(int argc, char** argv) {
     printf("===========================================\n");
     printf("  Space Invaders - TP03 Computacao Grafica\n");
     printf("===========================================\n");
-    printf("Controles:\n");
-    printf("  <- / -> : Mover canhao\n");
-    printf("  Espaco  : Atirar\n");
-    printf("  ESC     : Sair\n");
-    printf("===========================================\n\n");
+    printf("Iniciando jogo...\n\n");
     
     // Inicializa GLUT e OpenGL
     initGL(argc, argv);

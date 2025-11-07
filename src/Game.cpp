@@ -13,7 +13,7 @@ Game::Game(int width, int height)
     : player(nullptr), swarm(nullptr), 
       state(PLAYING), score(0),
       windowWidth(width), windowHeight(height),
-      backgroundMusic(nullptr), shootSound(nullptr), explosionSound(nullptr) {
+      menuMusic(nullptr), backgroundMusic(nullptr), shootSound(nullptr), explosionSound(nullptr) {
     
     // Inicializa estado das teclas
     for (int i = 0; i < 256; i++) {
@@ -62,7 +62,7 @@ void Game::init() {
     float spacing = 60;
     swarm = new AlienSwarm(5, 10, startX, startY, spacing);
     
-    state = PLAYING;
+    state = MENU; // Inicia no menu
     score = 0;
 }
 
@@ -82,14 +82,20 @@ void Game::initAudio() {
         return;
     }
     
-    // Carrega música de fundo
+    // Carrega música do menu
+    menuMusic = Mix_LoadMUS("assets/menu.mp3");
+    if (menuMusic == nullptr) {
+        printf("Erro ao carregar música do menu: %s\n", Mix_GetError());
+    } else {
+        // Toca música do menu em loop
+        Mix_PlayMusic(menuMusic, -1);
+        Mix_VolumeMusic(64); // Volume médio (0-128)
+    }
+    
+    // Carrega música do jogo
     backgroundMusic = Mix_LoadMUS("assets/music.mp3");
     if (backgroundMusic == nullptr) {
-        printf("Erro ao carregar música: %s\n", Mix_GetError());
-    } else {
-        // Toca música em loop infinito
-        Mix_PlayMusic(backgroundMusic, -1);
-        Mix_VolumeMusic(64); // Volume médio (0-128)
+        printf("Erro ao carregar música do jogo: %s\n", Mix_GetError());
     }
     
     // Carrega efeitos sonoros
@@ -112,6 +118,10 @@ void Game::cleanupAudio() {
     Mix_HaltMusic();
     
     // Libera recursos
+    if (menuMusic != nullptr) {
+        Mix_FreeMusic(menuMusic);
+        menuMusic = nullptr;
+    }
     if (backgroundMusic != nullptr) {
         Mix_FreeMusic(backgroundMusic);
         backgroundMusic = nullptr;
@@ -156,6 +166,12 @@ void Game::update() {
  * Desenha tudo na tela
  */
 void Game::draw() {
+    // Desenha tela de menu
+    if (state == MENU) {
+        drawMenu();
+        return;
+    }
+    
     // Desenha entidades
     if (player != nullptr) {
         player->draw();
@@ -342,9 +358,31 @@ void Game::addScore(int points) {
 }
 
 /**
+ * Atualiza dimensões da janela
+ */
+void Game::updateWindowSize(int width, int height) {
+    windowWidth = width;
+    windowHeight = height;
+}
+
+/**
  * Handlers de teclado
  */
 void Game::handleKeyDown(unsigned char key) {
+    // Se estiver no menu, Enter ou Space iniciam o jogo
+    if (state == MENU && (key == 13 || key == ' ')) {
+        state = PLAYING;
+        
+        // Troca de música: para menu.mp3 e toca music.mp3
+        Mix_HaltMusic();
+        if (backgroundMusic != nullptr) {
+            Mix_PlayMusic(backgroundMusic, -1);
+            Mix_VolumeMusic(64);
+        }
+        
+        return;
+    }
+    
     keyState[key] = true;
 }
 
@@ -375,5 +413,87 @@ void Game::playShootSound() {
 void Game::playExplosionSound() {
     if (explosionSound != nullptr) {
         Mix_PlayChannel(-1, explosionSound, 0);
+    }
+}
+
+/**
+ * Desenha tela de menu inicial
+ */
+void Game::drawMenu() {
+    // Desenha "estrelas" de fundo
+    glColor3f(0.8f, 0.8f, 0.8f);
+    glPointSize(2.0f);
+    glBegin(GL_POINTS);
+        for (int i = 0; i < 100; i++) {
+            float x = (i * 137.5f);
+            while (x > windowWidth) x -= windowWidth;
+            float y = (i * 219.3f);
+            while (y > windowHeight) y -= windowHeight;
+            glVertex2f(x, y);
+        }
+    glEnd();
+    
+    // Título principal
+    glColor3f(0.0f, 1.0f, 1.0f); // Ciano
+    const char* title = "SPACE INVADERS";
+    int titleWidth = glutBitmapLength(GLUT_BITMAP_TIMES_ROMAN_24, 
+                                      (const unsigned char*)title);
+    glRasterPos2f((windowWidth - titleWidth) / 2.0f, windowHeight - 120);
+    for (const char* c = title; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_TIMES_ROMAN_24, *c);
+    }
+    
+    // Controles
+    glColor3f(1.0f, 1.0f, 0.0f); // Amarelo
+    const char* controlsTitle = "CONTROLES:";
+    int controlsTitleWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                              (const unsigned char*)controlsTitle);
+    glRasterPos2f((windowWidth - controlsTitleWidth) / 2.0f, windowHeight / 2 + 80);
+    for (const char* c = controlsTitle; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+    }
+    
+    glColor3f(1.0f, 1.0f, 1.0f);
+    
+    // Controle: Setas
+    const char* moveText = "<- / ->  : Mover canhao";
+    int moveWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                     (const unsigned char*)moveText);
+    glRasterPos2f((windowWidth - moveWidth) / 2.0f, windowHeight / 2 + 40);
+    for (const char* c = moveText; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+    }
+    
+    // Controle: Espaço
+    const char* shootText = "ESPACO   : Atirar";
+    int shootWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                      (const unsigned char*)shootText);
+    glRasterPos2f((windowWidth - shootWidth) / 2.0f, windowHeight / 2 + 10);
+    for (const char* c = shootText; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+    }
+    
+    // Controle: ESC
+    const char* escText = "ESC      : Sair";
+    int escWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                    (const unsigned char*)escText);
+    glRasterPos2f((windowWidth - escWidth) / 2.0f, windowHeight / 2 - 20);
+    for (const char* c = escText; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+    }
+    
+    // Mensagem para iniciar (piscando)
+    static int blinkCounter = 0;
+    blinkCounter++;
+    
+    if ((blinkCounter / 30) % 2 == 0) { // Pisca a cada ~0.5s
+        glColor3f(0.0f, 1.0f, 0.0f); // Verde
+        const char* startText = ">>> Pressione ENTER ou ESPACO para iniciar <<<";
+        int startWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                          (const unsigned char*)startText);
+        glRasterPos2f((windowWidth - startWidth) / 2.0f, 100);
+        for (const char* c = startText; *c != '\0'; c++) {
+            glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+        }
     }
 }

@@ -10,6 +10,7 @@
  * Estados possíveis do jogo
  */
 enum GameState {
+    MENU,
     PLAYING,
     GAME_OVER,
     WIN
@@ -37,6 +38,7 @@ private:
     bool specialKeyState[256];
     
     // Sistema de áudio SDL2_mixer
+    Mix_Music* menuMusic;
     Mix_Music* backgroundMusic;
     Mix_Chunk* shootSound;
     Mix_Chunk* explosionSound;
@@ -68,6 +70,7 @@ public:
     void drawHUD();
     
     // Desenha mensagens de fim de jogo
+    void drawMenu();
     void drawGameOver();
     void drawWin();
     
@@ -84,6 +87,9 @@ public:
     GameState getState() const { return state; }
     int getScore() const { return score; }
     Player* getPlayer() { return player; }
+    
+    // Atualiza dimensões da janela
+    void updateWindowSize(int width, int height);
     
     // Adiciona pontos
     void addScore(int points);
