@@ -38,9 +38,9 @@ void Projectile::draw() {
     
     // Cor branca para tiro do jogador, amarela para tiro dos aliens
     if (fromPlayer) {
-        glColor3f(1.0f, 1.0f, 1.0f);  // Branco
+        glColor3f(1.0f, 1.0f, 1.0f); // Branco
     } else {
-        glColor3f(1.0f, 1.0f, 0.0f);  // Amarelo
+        glColor3f(1.0f, 1.0f, 0.0f); // Amarelo
     }
     
     glBegin(GL_QUADS);

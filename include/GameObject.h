@@ -6,9 +6,9 @@
  */
 class GameObject {
 protected:
-    float x, y;        // Posição do objeto
+    float x, y; // Posição do objeto
     float width, height; // Dimensões da bounding box
-    bool active;       // Se o objeto está ativo no jogo
+    bool active; // Se o objeto está ativo no jogo
 
 public:
     GameObject(float x, float y, float width, float height);

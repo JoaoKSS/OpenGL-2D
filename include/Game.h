@@ -37,7 +37,6 @@ private:
     bool keyState[256];
     bool specialKeyState[256];
     
-    // Sistema de áudio SDL2_mixer
     Mix_Music* menuMusic;
     Mix_Music* backgroundMusic;
     Mix_Chunk* shootSound;

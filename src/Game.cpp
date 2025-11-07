@@ -33,7 +33,7 @@ Game::~Game() {
 }
 
 /**
- * Retorna a instância do jogo (Singleton)
+ * Retorna a instância do jogo
  */
 Game* Game::getInstance() {
     return instance;
@@ -56,7 +56,7 @@ void Game::init() {
     // Cria o jogador no centro inferior
     player = new Player(windowWidth / 2, 50, 30);
     
-    // Cria o enxame de alienígenas (5 linhas x 10 colunas)
+    // Cria o enxame de alienígenas
     float startX = 100;
     float startY = windowHeight - 100;
     float spacing = 60;
@@ -67,7 +67,7 @@ void Game::init() {
 }
 
 /**
- * Inicializa o sistema de áudio SDL2_mixer
+ * Inicializa o sistema de áudio
  */
 void Game::initAudio() {
     // Inicializa SDL áudio
@@ -490,7 +490,7 @@ void Game::drawMenu() {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
     }
     
-    // Mensagem para iniciar (piscando)
+    // Mensagem para iniciar
     static int blinkCounter = 0;
     blinkCounter++;
     

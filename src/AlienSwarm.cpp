@@ -90,8 +90,8 @@ void AlienSwarm::update() {
             Projectile* shot = new Projectile(
                 shooter->getX(), 
                 shooter->getY() - shooter->getHeight() / 2, 
-                -10.0f,  // Velocidade negativa (para baixo)
-                false    // Não é do jogador
+                -10.0f, // Velocidade negativa para baixo
+                false // Não é do jogador
             );
             shots.push_back(shot);
         }

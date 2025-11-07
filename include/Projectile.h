@@ -8,8 +8,8 @@
  */
 class Projectile : public GameObject {
 private:
-    float speed;       // Velocidade do projétil
-    bool fromPlayer;   // true se for do jogador e false se for do alien
+    float speed; // Velocidade do projétil
+    bool fromPlayer; // true se for do jogador e false se for do alien
 
 public:
     Projectile(float x, float y, float speed, bool fromPlayer);

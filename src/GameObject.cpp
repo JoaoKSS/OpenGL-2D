@@ -26,7 +26,7 @@ void GameObject::setActive(bool active) {
 }
 
 /**
- * Detecção de colisão AABB (Axis-Aligned Bounding Box)
+ * Detecção de colisão AABB
  * Retorna true se este objeto está colidindo com outro
  * 
  * Dois retângulos A e B NÃO colidem se:

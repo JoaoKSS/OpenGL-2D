@@ -38,7 +38,7 @@ void Player::draw() {
     
     // Desenha como um triângulo apontando para cima
     glBegin(GL_TRIANGLES);
-        glVertex2f(0, this->height / 2);           // Topo
+        glVertex2f(0, this->height / 2); // Topo
         glVertex2f(-this->width / 2, -this->height / 2); // Base esquerda
         glVertex2f(this->width / 2, -this->height / 2);  // Base direita
     glEnd();

@@ -115,9 +115,9 @@ void initGL(int argc, char** argv) {
     glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
     glutInitWindowSize(width, height);
     glutInitWindowPosition(100, 100);
-    glutCreateWindow("TP03 - Space Invaders (OOP)");
+    glutCreateWindow("TP03 CG - Space Invaders");
     
-    // Cor de fundo (preto)
+    // Cor de fundo
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 }
 
@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
     // Inicializa GLUT e OpenGL
     initGL(argc, argv);
     
-    // Cria e inicializa o jogo PRIMEIRO
+    // Cria e inicializa o jogo
     game = new Game(width, height);
     Game::setInstance(game);
     game->init();
@@ -164,7 +164,7 @@ int main(int argc, char** argv) {
     // Entra no loop principal do GLUT
     glutMainLoop();
     
-    // Limpeza (nunca alcançado por causa do glutMainLoop)
+    // Limpeza
     delete game;
     
     return 0;

@@ -9,9 +9,9 @@
  */
 class Player : public GameObject {
 private:
-    float speed;           // Velocidade de movimentação
-    int lives;             // Vidas restantes
-    Projectile* shot;      // Projétil do jogador apenas um ativo por vez
+    float speed; // Velocidade de movimentação
+    int lives; // Vidas restantes
+    Projectile* shot; // Projétil do jogador apenas um ativo por vez
 
 public:
     Player(float x, float y, float size, int lives = 3);

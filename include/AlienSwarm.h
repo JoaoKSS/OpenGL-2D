@@ -7,7 +7,6 @@
 
 /**
  * Classe que gerencia o enxame de alienígenas
- * Move todos os aliens como um bloco e controla seus disparos
  */
 class AlienSwarm {
 private:

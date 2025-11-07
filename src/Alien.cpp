@@ -10,7 +10,6 @@ Alien::Alien(float x, float y, float size, int points)
 
 /**
  * Atualiza o alienígena
- * A movimentação é controlada pelo AlienSwarm
  */
 void Alien::update() {
 }
