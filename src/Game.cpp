@@ -328,7 +328,9 @@ void Game::drawGameOver() {
     // Pontuação final
     glColor3f(1.0f, 1.0f, 1.0f);
     std::string finalScore = "Final Score: " + std::to_string(score);
-    glRasterPos2f(windowWidth / 2 - 80, windowHeight / 2 - 40);
+    int scoreWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                      (const unsigned char*)finalScore.c_str());
+    glRasterPos2f((windowWidth - (scoreWidth / scaleX)) / 2, windowHeight / 2 - 40);
     for (char c : finalScore) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
     }
@@ -354,7 +356,9 @@ void Game::drawWin() {
     // Pontuação final
     glColor3f(1.0f, 1.0f, 1.0f);
     std::string finalScore = "Final Score: " + std::to_string(score);
-    glRasterPos2f(windowWidth / 2 - 80, windowHeight / 2 - 40);
+    int scoreWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                      (const unsigned char*)finalScore.c_str());
+    glRasterPos2f((windowWidth - (scoreWidth / scaleX)) / 2, windowHeight / 2 - 40);
     for (char c : finalScore) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
     }
