@@ -145,6 +145,16 @@ void AlienSwarm::drawShots() {
 }
 
 /**
+ * Limpa todos os tiros (usado quando jogador perde vida)
+ */
+void AlienSwarm::clearShots() {
+    for (auto shot : shots) {
+        delete shot;
+    }
+    shots.clear();
+}
+
+/**
  * Verifica se algum alien atingiu a borda
  */
 bool AlienSwarm::checkBoundaries() {

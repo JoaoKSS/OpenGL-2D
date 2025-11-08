@@ -40,6 +40,9 @@ public:
     void updateShots();
     void drawShots();
     
+    // Limpa todos os tiros quando jogador perde vida
+    void clearShots();
+    
     // Remove alien destruído e retorna seus pontos
     int removeAlien(Alien* alien);
     

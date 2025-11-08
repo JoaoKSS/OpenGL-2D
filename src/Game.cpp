@@ -243,13 +243,19 @@ void Game::checkCollisions() {
     }
     
     // Colisão: Tiros dos aliens vs. Jogador
-    std::vector<Projectile*>& alienShots = swarm->getShots();
-    for (auto shot : alienShots) {
-        if (shot->isActive() && shot->checkCollision(player)) {
-            // Jogador foi atingido
-            player->loseLife();
-            shot->setActive(false);
-            break; // Sai do loop após primeira colisão
+    if (!player->isInvincible()) {
+        std::vector<Projectile*>& alienShots = swarm->getShots();
+        for (auto shot : alienShots) {
+            if (shot->isActive() && shot->checkCollision(player)) {
+                // Jogador foi atingido
+                player->loseLife();
+                shot->setActive(false);
+                swarm->clearShots();
+                // Toca som de explosão
+                playExplosionSound();
+                
+                break; // Sai do loop após primeira colisão
+            }
         }
     }
 }

@@ -12,6 +12,8 @@ private:
     float speed; // Velocidade de movimentação
     int lives; // Vidas restantes
     Projectile* shot; // Projétil do jogador apenas um ativo por vez
+    int invincibilityTimer; // Timer de invencibilidade após perder vida
+    static const int INVINCIBILITY_DURATION = 90;
 
 public:
     Player(float x, float y, float size, int lives = 3);
@@ -32,6 +34,7 @@ public:
     void loseLife();
     int getLives() const { return lives; }
     bool isAlive() const { return lives > 0; }
+    bool isInvincible() const { return invincibilityTimer > 0; }
 
     // Acesso ao projétil
     Projectile* getShot() { return shot; }

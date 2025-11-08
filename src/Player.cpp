@@ -9,7 +9,7 @@ extern int height;
  * Construtor do jogador
  */
 Player::Player(float x, float y, float size, int lives)
-    : GameObject(x, y, size, size), speed(8.0f), lives(lives), shot(nullptr) {
+    : GameObject(x, y, size, size), speed(8.0f), lives(lives), shot(nullptr), invincibilityTimer(0) {
 }
 
 Player::~Player() {
@@ -24,6 +24,11 @@ Player::~Player() {
 void Player::update() {
     // Atualizar o tiro
     updateShot();
+    
+    // Decrementar timer de invencibilidade
+    if (invincibilityTimer > 0) {
+        invincibilityTimer--;
+    }
 }
 
 /**
@@ -32,9 +37,20 @@ void Player::update() {
 void Player::draw() {
     if (!active) return;
     
+    // Efeito de piscar quando invencível
+    if (invincibilityTimer > 0 && (invincibilityTimer / 5) % 2 == 0) {
+        return;
+    }
+    
     glPushMatrix();
     glTranslatef(x, y, 0);
-    glColor3f(0.0f, 1.0f, 0.0f); // Verde
+    
+    // Muda cor durante invencibilidade
+    if (invincibilityTimer > 0) {
+        glColor3f(1.0f, 1.0f, 0.0f); // Amarelo quando invencível
+    } else {
+        glColor3f(0.0f, 1.0f, 0.0f); // Verde normal
+    }
     
     // Desenha como um triângulo apontando para cima
     glBegin(GL_TRIANGLES);
@@ -113,6 +129,7 @@ void Player::loseLife() {
     lives--;
     if (lives > 0) {
         reset();
+        invincibilityTimer = INVINCIBILITY_DURATION;
     } else {
         active = false;
     }
@@ -124,6 +141,7 @@ void Player::loseLife() {
 void Player::reset() {
     x = ::width / 2;
     y = 50;
+    active = true;
     // Remove o tiro ativo
     if (shot != nullptr) {
         delete shot;
