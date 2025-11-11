@@ -193,6 +193,49 @@ void Game::draw() {
 }
 
 /**
+ * Reinicia o jogo
+ */
+void Game::restart() {
+    // Limpa objetos existentes
+    if (player != nullptr) {
+        delete player;
+        player = nullptr;
+    }
+    if (swarm != nullptr) {
+        delete swarm;
+        swarm = nullptr;
+    }
+    
+    // Reseta score
+    score = 0;
+    
+    // Recria o jogador
+    player = new Player(windowWidth / 2, 50, 30);
+    
+    // Recria o enxame de alienígenas
+    float startX = 100;
+    float startY = windowHeight - 100;
+    float spacing = 60;
+    swarm = new AlienSwarm(5, 10, startX, startY, spacing);
+    
+    // Reseta estado das teclas
+    for (int i = 0; i < 256; i++) {
+        keyState[i] = false;
+        specialKeyState[i] = false;
+    }
+    
+    // Volta ao estado de jogo
+    state = PLAYING;
+    
+    // Garante que a música do jogo está tocando
+    Mix_HaltMusic();
+    if (backgroundMusic != nullptr) {
+        Mix_PlayMusic(backgroundMusic, -1);
+        Mix_VolumeMusic(64);
+    }
+}
+
+/**
  * Processa input do jogador
  */
 void Game::processInput() {
@@ -334,6 +377,24 @@ void Game::drawGameOver() {
     for (char c : finalScore) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
     }
+    
+    // Instruções para jogar novamente
+    glColor3f(0.0f, 1.0f, 0.0f); // Verde
+    const char* restartText = "Pressione ENTER para jogar novamente";
+    int restartWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                        (const unsigned char*)restartText);
+    glRasterPos2f((windowWidth - (restartWidth / scaleX)) / 2, windowHeight / 2 - 80);
+    for (const char* c = restartText; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+    }
+    
+    const char* quitText = "ou ESC para sair";
+    int quitWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                     (const unsigned char*)quitText);
+    glRasterPos2f((windowWidth - (quitWidth / scaleX)) / 2, windowHeight / 2 - 110);
+    for (const char* c = quitText; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+    }
 }
 
 /**
@@ -361,6 +422,24 @@ void Game::drawWin() {
     glRasterPos2f((windowWidth - (scoreWidth / scaleX)) / 2, windowHeight / 2 - 40);
     for (char c : finalScore) {
         glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, c);
+    }
+    
+    // Instruções para jogar novamente
+    glColor3f(1.0f, 1.0f, 0.0f); // Amarelo
+    const char* restartText = "Pressione ENTER para jogar novamente";
+    int restartWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                        (const unsigned char*)restartText);
+    glRasterPos2f((windowWidth - (restartWidth / scaleX)) / 2, windowHeight / 2 - 80);
+    for (const char* c = restartText; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
+    }
+    
+    const char* quitText = "ou ESC para sair";
+    int quitWidth = glutBitmapLength(GLUT_BITMAP_HELVETICA_18,
+                                     (const unsigned char*)quitText);
+    glRasterPos2f((windowWidth - (quitWidth / scaleX)) / 2, windowHeight / 2 - 110);
+    for (const char* c = quitText; *c != '\0'; c++) {
+        glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, *c);
     }
 }
 
@@ -395,6 +474,17 @@ void Game::handleKeyDown(unsigned char key) {
         }
         
         return;
+    }
+    
+    // Se estiver em GAME_OVER ou WIN, Enter reinicia o jogo
+    if ((state == GAME_OVER || state == WIN) && key == 13) {
+        restart();
+        return;
+    }
+    
+    // ESC sai do jogo
+    if (key == 27) {
+        exit(0);
     }
     
     keyState[key] = true;

@@ -54,6 +54,7 @@ public:
     void init();
     void initAudio();
     void cleanupAudio();
+    void restart();
     
     // Loop principal
     void update();
