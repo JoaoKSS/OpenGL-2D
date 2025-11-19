@@ -78,11 +78,12 @@ CG3/
 │   ├── Player.cpp
 │   ├── Projectile.cpp
 │   └── main.cpp
-├── bin/                        # Executável gerado
-├── obj/                        # Objetos (.o)
+├── bin/                                 # Executável gerado
+├── obj/                                 # Objetos (.o)
 ├── makefile
-├── TP3_OpenGL2D_CG_2025.pdf    # Enunciado
-└── README.md                   # Este arquivo
+├── TP3_OpenGL2D_CG_2025.pdf             # Enunciado
+├── README.md                            # Este arquivo
+└── Relatorio_Trabalho Prático3.pdf      
 ```
 
 ---
